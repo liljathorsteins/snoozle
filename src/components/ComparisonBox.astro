@@ -1,0 +1,23 @@
+---
+const { variant = "home_vs_hospital" } = Astro.props;
+
+/* Bullet sets – can expand later                                  */
+const BULLETS = {
+  home_vs_hospital: [
+    ["Designed for **you** not a caregiver"],
+    ["Breathable fabric – **no nylon**"],
+    ["Absolutely **silent** during movement"],
+    ["Handle-free, no medical-equipment look"],
+    ["Perfect friction – not too slippery"],
+  ],
+};
+---
+
+<section class="my-8 p-6 rounded-xl bg-snoozle/10 border border-snoozle/20">
+  <h3 class="text-lg font-semibold text-snoozle mb-4">
+    Snoozle vs. Hospital Slide Sheets
+  </h3>
+  <ul class="space-y-2 marker:text-snoozle list-disc list-inside">
+    {BULLETS[variant].map(item => <li innerHTML={item} />)}
+  </ul>
+</section>
