@@ -1,0 +1,50 @@
+diff --git a/astro.config.mjs b/astro.config.mjs
+@@
+-import { defineConfig } from 'astro/config';
+-
+-export default defineConfig({
+-  integrations: [],
+-});
++import { defineConfig } from "astro/config";
++import mdx from "@astrojs/mdx";
++import content from "@astrojs/content";
++
++export default defineConfig({
++  integrations: [mdx(), content()],
++});
++
++// Nothing else changes – Vite/Tailwind settings stay as-is
+diff --git /dev/null b/src/content/config.ts
+@@
++import { z, defineCollection } from "astro:content";
++
++export const collections = {
++  articles: defineCollection({
++    schema: z.object({
++      title: z.string(),
++      description: z.string(),
++      published: z.string(),
++      showComparison: z.boolean().default(true),
++      reviewedBy: z.string(),
++    }),
++  }),
++};
+diff --git /dev/null b/src/pages/articles/[slug].astro
+@@
++---
++import { getEntryBySlug } from "astro:content";
++import ArticleLayout from "../../layouts/ArticleLayout.astro";
++
++const { slug } = Astro.params;
++const entry = await getEntryBySlug("articles", slug);
++
++if (!entry) return Astro.redirect("/404");
++
++const { Content, data: frontmatter } = await entry.render();
++---
++
++<ArticleLayout {frontmatter} slug={slug}>
++  <Content />
++</ArticleLayout>
++
++<!-- Everything below lives in the shared layout (hero, comparison box, CTA) -->

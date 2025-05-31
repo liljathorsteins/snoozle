@@ -1,0 +1,14 @@
+---
+import { getEntryBySlug } from "astro:content";
+import ArticleLayout from "../../layouts/ArticleLayout.astro";
+
+const { slug } = Astro.params;
+const entry = await getEntryBySlug("articles", slug);
+if (!entry) return Astro.redirect("/404");
+
+const { Content, data: frontmatter } = await entry.render();
+---
+
+<ArticleLayout {frontmatter} slug={slug}>
+  <Content />
+</ArticleLayout>
