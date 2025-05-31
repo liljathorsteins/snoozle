@@ -1,0 +1,27 @@
+---
+const { frontmatter } = Astro.props;
+---
+
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+
+    <title>{frontmatter?.title ?? "Snoozle Sleep Mobility"}</title>
+    <meta name="description" content={frontmatter?.description ?? ""} />
+
+    <!-- Tailwind (already configured) -->
+    <style global>
+      @tailwind base;
+      @tailwind components;
+      @tailwind utilities;
+    </style>
+  </head>
+
+  <body class="min-h-screen bg-white text-gray-900 antialiased">
+    <main class="max-w-3xl mx-auto p-6">
+      <slot />       <!-- ArticleLayout will render inside here -->
+    </main>
+  </body>
+</html>
