@@ -1,0 +1,18 @@
+---
+const { ctaLabel = "Buy now", ctaHref = "https://mysnoozle.com/products/snoozle-slide-sheet" } = Astro.props;
+---
+
+<section class="bg-snoozle text-white p-6 rounded-xl my-8 shadow-lg">
+  <h3 class="text-xl font-semibold">Snoozle&nbsp;Slide&nbsp;Sheet</h3>
+  <p class="mt-2">
+    Turn in bed with&nbsp;<strong>80&nbsp;% less friction</strong>.<br />
+    Trusted in Icelandic pharmacies and recommended by physiotherapists.
+  </p>
+
+  <a
+    href={ctaHref}
+    class="inline-block mt-4 bg-white text-snoozle font-bold px-6 py-3 rounded-lg"
+  >
+    {ctaLabel}
+  </a>
+</section>
