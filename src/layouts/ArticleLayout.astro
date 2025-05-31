@@ -1,0 +1,23 @@
+---
+import BaseLayout from './Base.astro';
+import ComparisonBox from '../components/ComparisonBox.astro';
+import SnoozleCTA from '../components/SnoozleCTA.astro';
+
+const { frontmatter, slug } = Astro.props;
+
+/* Pick hero image: manual front-matter wins, else deterministic slug-hash */
+import { pickImage } from '../utils/featuredImage.js';
+const hero = frontmatter.image ?? pickImage(slug);
+---
+<BaseLayout {frontmatter}>
+  <article class="prose lg:prose-lg max-w-none">
+    <img src={hero} alt={frontmatter.title} class="w-full h-64 object-cover rounded-xl mb-6" />
+
+    <!-- Quick-answer section is written directly in MDX body -->
+    <slot />
+
+    {frontmatter.showComparison && <ComparisonBox />}
+
+    <SnoozleCTA />
+  </article>
+</BaseLayout>
