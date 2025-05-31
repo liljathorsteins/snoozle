@@ -2,9 +2,8 @@
 import { getCollection, getEntryBySlug } from "astro:content";
 import ArticleLayout from "../../layouts/ArticleLayout.astro";
 
-// ① Export getStaticPaths so Astro knows which slugs exist
+// Tell Astro which slugs exist
 export async function getStaticPaths() {
-  // Fetch all entries in the "articles" collection
   const allArticles = await getCollection("articles");
   return allArticles.map((article) => ({
     params: { slug: article.slug },
@@ -12,17 +11,14 @@ export async function getStaticPaths() {
 }
 
 const { slug } = Astro.params;
-// ② Fetch the specific entry by slug
 const entry = await getEntryBySlug("articles", slug);
 if (!entry) {
-  // If no such entry exists, redirect to a 404 page
   return Astro.redirect("/404");
 }
 
 const { Content, data: frontmatter } = await entry.render();
 ---
 
-<!-- ③ Render the page inside ArticleLayout -->
 <ArticleLayout {frontmatter} slug={slug}>
   <Content />
 </ArticleLayout>
