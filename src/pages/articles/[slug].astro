@@ -1,24 +1,40 @@
 ---
-import { getCollection, getEntryBySlug } from "astro:content";
+import { getCollection } from "astro:content";
 import ArticleLayout from "../../layouts/ArticleLayout.astro";
 
-// Tell Astro which slugs exist
+/**
+ * 1. getStaticPaths() builds a list of all slugs (ID without .mdx).
+ */
 export async function getStaticPaths() {
   const allArticles = await getCollection("articles");
-  return allArticles.map((article) => ({
-    params: { slug: article.slug },
-  }));
+
+  // DEBUG: each entry.id currently includes the ".mdx" extension
+  console.log("🐛 full entry IDs (with extension):", allArticles.map((a) => a.id));
+
+  // Strip off ".mdx" so we generate paths like "/articles/de-caregiver-sleep-support"
+  return allArticles.map((article) => {
+    const bareSlug = article.id.replace(/\.mdx$/, "");
+    return { params: { slug: bareSlug } };
+  });
 }
 
+// 2. Grab the slug from the URL (e.g. "de-caregiver-sleep-support")
 const { slug } = Astro.params;
-const entry = await getEntryBySlug("articles", slug);
+
+// 3. Re‐use getCollection() to find the entry with matching ID (filename + ".mdx")
+const allArticles = await getCollection("articles");
+const entry = allArticles.find((e) => e.id === `${slug}.mdx`);
+
 if (!entry) {
+  // If we didn't find an entry whose ID is "de-caregiver-sleep-support.mdx", send to 404
   return Astro.redirect("/404");
 }
 
+// 4. Render the found entry
 const { Content, data: frontmatter } = await entry.render();
 ---
 
+<!-- 5. Render the page using ArticleLayout (hero image, ComparisonBox, CTA) -->
 <ArticleLayout {frontmatter} slug={slug}>
   <Content />
 </ArticleLayout>

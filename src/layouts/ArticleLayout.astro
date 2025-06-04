@@ -3,20 +3,43 @@ import BaseLayout from './Base.astro';
 import ComparisonBox from '../components/ComparisonBox.astro';
 import SnoozleCTA from '../components/SnoozleCTA.astro';
 
+import { pickImage } from '../utils/featuredImage.js';
+
 const { frontmatter, slug } = Astro.props;
 
-/* Pick hero image: manual front-matter wins, else deterministic slug-hash */
-import { pickImage } from '../utils/featuredImage.js';
-const hero = frontmatter.image ?? pickImage(slug);
+// Decide on a hero image for the layout only (ignore any MDX‐inline images)
+let hero;
+if (frontmatter?.image) {
+  hero = frontmatter.image;
+} else if (typeof slug === 'string') {
+  hero = pickImage(slug);
+} else {
+  hero = '/featured/img01.webp';
+}
 ---
+
+<style>
+  /* If the MDX content starts with an <img>, hide that first image */
+  .article-content > img:first-child {
+    display: none;
+  }
+</style>
+
 <BaseLayout {frontmatter}>
   <article class="prose lg:prose-lg max-w-none">
-    <img src={hero} alt={frontmatter.title} class="w-full h-64 object-cover rounded-xl mb-6" />
+    <!-- Always render exactly one banner from layout -->
+    <img
+      src={hero}
+      alt={frontmatter?.title ?? 'Snoozle Slide Sheet'}
+      class="w-full h-64 object-cover rounded-xl mb-6"
+    />
 
-    <!-- Quick-answer section is written directly in MDX body -->
-    <slot />
+    <!-- Wrap the MDX body in a class that hides its first <img> if present -->
+    <div class="article-content">
+      <slot />
+    </div>
 
-    {frontmatter.showComparison && <ComparisonBox />}
+    {frontmatter?.showComparison && <ComparisonBox />}
 
     <SnoozleCTA />
   </article>
